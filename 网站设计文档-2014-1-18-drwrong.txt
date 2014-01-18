@@ -1,0 +1,99 @@
+整体逻辑：
+首页->分类展示->商品详情->|放入购物车->|结算->登出
+			 |评论        | 注册 -> 登录 
+
+首页　
+url: /  
+功能：导航＋产品展示，搜索，其中以产品展示为主，产品展示最新产品，热卖产品，高评价产品,特卖商品
+
+response:
+{'cart':[shopping_item]}购物车
+{'newproducts':product} 上线１个月的商品
+{'hotproducts':product}热评商品　评价量前７
+
+商品分类展示：
+
+url: /category/cid-scid-sordid-sort
+功能：展现商品分类，可以按照子分类过滤，可以按照某一个排序规律进行排序
+request:
+子分类scid 
+排序依据sortid：0 默认 1 上架时间 2价格 3 关注度
+排序方式 0:升序 1降序
+response:
+{'productimageurl':productimageurl,
+ 'scid':[sub category list],
+ 'releateproduct':[],
+ 'errorcode': ,
+ 'error':,}
+errorcode: 001 error: product not found 没有找到所要的商品
+
+商品详情页：
+url:/item/pid
+功能：展现商品的详情，包括相关的图,产品海报，常见问题，用户评论等等信息。
+{'product':   ,
+'errorcode':  ,
+'error':  ,
+}
+errorcode:001 error:product not found 没有找到所要的商品
+购物车：
+url:/cart
+功能：购物车,展现当前用户所购买的产品，并进行相关产品推荐
+response:
+{'product':[]
+'recommand':[]}
+用户管理：
+url:/login
+功能:实现用户登录，
+备注：用户可以采用其他社交帐号免注册登录
+request:
+POST：{
+username:''
+password:''
+rememberme:''
+auth_code:''
+}
+response:
+{
+	
+  'errorcode':
+  'error':
+  'status':
+}
+GET:
+response:
+{
+  'errorcode':
+  'error':
+  'status':
+  'auth_img':
+}
+errorcode: 002 error: 用户名或密码不正确
+           003 error: 用户已被禁用
+status: 0:登录成功
+	1:登录无效
+url:/logout 
+功能：实现用户登出
+response:
+{
+  'errorponse':
+  'error':  
+  'status': 
+}
+errorcode: 004 error:用户已登出
+status: 0:登出成功
+	1:登出失败
+url:/register/commonuser
+功能：实现普通用户注册
+POST:
+request:
+{
+  mail:
+  username:
+  mobile:
+  password:
+}
+url:/register/merchant
+功能：实现商户注册
+
+
+
