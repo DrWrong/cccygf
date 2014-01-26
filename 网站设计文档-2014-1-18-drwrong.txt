@@ -1,47 +1,87 @@
 整体逻辑：
-首页->分类展示->商品详情->|放入购物车->|结算->登出
-			 |评论        | 注册 -> 登录 
+首页->分类展示->商品详情->|放入购物车(一键结算）->|结算->登出
+			 |评论   | 注册 -> 登录 
 
+
+备注：
 保存图片文档为PNG形式
-首页　
-url: /  
+商户上线　服务端审核
+全局变量：
+{'category':categoryobj}
+第一部分：商品管理
+１．首页　
+url: / 
 功能：导航＋产品展示，搜索，其中以产品展示为主，产品展示最新产品，热卖产品，高评价产品,特卖商品
-
+GET方式
 response:
-{'cart':[shopping_item]}购物车
-{'newproducts':product} 上线１个月的商品
-{'hotproducts':product}热评商品　评价量前７
+{'newProduct':productobjlist, #最新上线的前９件商品
+ 'hotProduct':productobjlist, #热卖商品前10
+ 'mostCommentProduct':productobjlist,
+ 'saleProduct':productobjlist},#热评商品
 
-商品分类展示：
+ Template:home.html
 
-url: /category/cid-scid-sordid-sort
+２．搜索页
+url:/search?q=keyword
+功能：实现产品搜索，如果搜索字串为空，返回全部商品，如果不为空返回选定商品，如果未找到，显示热卖商品
+GET:
+requst: q=keyword
+response
+{
+  'status':0 #正常　1 -未找到商品　2-全部商品
+  'filters':filterdict
+  'products':productobjlist
+  'total':totalnumber
+}
+
+测试：xss sql注入时
+TODO:1.搜索功能优化 2.搜索缓存
+Template:category.html
+
+３．商品分类展示：
+
+url: /category/cid?fid=''&sortid=''&sort=''
 功能：展现商品分类，可以按照子分类过滤，可以按照某一个排序规律进行排序
-request:
-子分类scid 
-排序依据sortid：0 默认 1 上架时间 2价格 3 关注度
-排序方式 0:升序 1降序
-response:
-{'productimageurl':productimageurl,
- 'scid':[sub category list],
- 'releateproduct':[],
- 'errorcode': ,
- 'error':,}
-errorcode: 001 error: product not found 没有找到所要的商品
 
-商品详情页：
+GET:
+requst: fid sortid sort
+cid  分类
+fid  筛选依据，中间以'+'分开
+sortid: 排序依据 0 默认 1 上架时间 2价格 3 关注度
+sort :排序方式 0:降序 1：升序
+
+response:
+{'status':num, #状态码
+　'filters':filterdict,
+  'products':productobj,
+  'total':0,#需前端处理 　
+}
+Template:category.html
+可能错误处理：400 bad request
+
+4.商品详情页：
+
 url:/item/pid
 功能：展现商品的详情，包括相关的图,产品海报，常见问题，用户评论等等信息。
-{'product':   ,
-'errorcode':  ,
-'error':  ,
+GET：
+pid  product id
+response:
+{
+'status':num,#状态码 3-商品已下线
+'product':productobj,
 }
-errorcode:001 error:product not found 没有找到所要的商品
-购物车：
+错误跳转：商品没有找到时跳转到404页
+Template:detail.html
+
+5.购物车：
 url:/cart
 功能：购物车,展现当前用户所购买的产品，并进行相关产品推荐
 response:
 {'product':[]
 'recommand':[]}
+Template:cart.html
+
+第二部分：用户管理
 用户管理：
 url:/login
 功能:实现用户登录，
@@ -95,6 +135,7 @@ request:
 }
 url:/register/merchant
 功能：实现商户注册
-
-
+圈子频道：加好友
+会员与非会员区分方式：
+                  分享＋评价＋　
 
