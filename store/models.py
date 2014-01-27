@@ -16,6 +16,11 @@ class Products(models.Model):
 	productgroup=models.ForeignKey('ProductsGroup')
 	#相同产品的显著差别
 	feature=models.CharField(max_length=30)
+	#产品小图
+	sketch=models.ImageField(upload_to=(lambda instance,filename:\
+		'productimage/%s/%s/%s/%s/'%(instance.productgroup.merchant.name,\
+			instance.productgroup.category.name,instance.productgroup.name,\
+			instance.name)))
 	def __str__(self):
 		self.name
 
@@ -32,9 +37,9 @@ class ProductImage(models.Model):
 	table to restore image url for product"""
 	product=models.ForeignKey(Products)
 	image=models.ImageField(upload_to=(lambda instance,filename:\
-		'productimage/%s/%s/%s/%s/%s'%(instance.product.productgroup.merchant.name,\
+		'productimage/%s/%s/%s/%s/'%(instance.product.productgroup.merchant.name,\
 			instance.product.productgroup.category.name,instance.product.productgroup.name,\
-			instance.product.name,filename)))
+			instance.product.name)))
 
 #同类商品组
 class ProductsGroup(models.Model):
@@ -68,7 +73,7 @@ class ProductsGroup(models.Model):
 				raise ValidationError('促销产品未填写促销价格')
 
 #同类产品推荐
-class RecommandProducts(models.Models):
+class RecommandProducts(models.Model):
 	"""docstring for RecommandProducts"""
 	srcproduct=models.ForeignKey(ProductsGroup)
 	recpid=models.PositiveSmallIntegerField()

@@ -181,8 +181,61 @@
 ```
 - link: 购物车 收藏页
 - 可能的错误处理：404 not found
+```
 ---
-## 6 购物车
+
+##6 购物车inline
+---
+- 功能：页面内的购物车，显示当前加入购物车的商品
+- url: /cart/inline/
+- urlname: cart:inlinecart
+- view: cart.views.inlinecart
+- template: none
+- request method:GET
+- response: json '{'status':statunumber,'error':
+'value':[{'imgurl':urlstr,'name':namestr,'price':pricefloat,'amount':amountinterger,'pid':productid},...]}'
+- 备注: staunumber:0 访问数据正常 statunumber:4 购物车里没有商品，
+- request method:POST
+  POST requets 需设置“X-CSRFToken"头的值为csrftoken,其中csrftoken值在cookies 中，[代码如下](https://docs.djangoproject.com/en/1.6/ref/contrib/csrf/#ajax)：
+```javascript
+      var csrftoken=$.cookie('csrftoken')
+            function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function sameOrigin(url) {
+    // test that a given url is a same-origin URL
+    // url could be relative or scheme relative or absolute
+    var host = document.location.host; // host + port
+    var protocol = document.location.protocol;
+    var sr_origin = '//' + host;
+    var origin = protocol + sr_origin;
+    // Allow absolute or scheme relative URLs to same origin
+    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+        // or any other URL that isn't scheme relative or absolute i.e relative.
+        !(/^(\/\/|http:|https:).*/.test(url));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+            // Send the token to same-origin, relative URLs only.
+            // Send the token only if the method warrants CSRF protection
+            // Using the CSRFToken value acquired earlier
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+```            
+- request args:
+   dataType: 'json' '{'operator': opnum  'pid':productid}
+   operator 表示操作数 0删除 1添加
+- response: json '{'status':statunumber}'
+    statubumber: 0表示删除成功，5没有购买此商品
+   
+     
+
+
 
 
      

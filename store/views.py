@@ -4,7 +4,10 @@ from django.http import HttpResponse
 from cms.models import Gallery
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 # Create your views here.
+@ensure_csrf_cookie()
 def home(request):
 	newProduct=ProductsGroup.objects.filter(active=True).order_by('-pub_time')[:9]
 	hotProduct=ProductsGroup.objects.filter(active=True).order_by('salenumber')[:10]
@@ -17,6 +20,7 @@ def home(request):
 		'saleProduct':saleProduct,'showgallery':gallery})
 
 #TODO 查询功能优化
+@ensure_csrf_cookie()
 def search(request):
 	q=request.GET.get("q",'')
 	if q=='':
@@ -32,7 +36,7 @@ def search(request):
 		else:
 			status=0
 	return _displaycategory(request,status,product,total)
-
+@ensure_csrf_cookie()
 def category(request,cid):
 	products=ProductsGroup.objects.filter(active=True).filter(category__id=cid)
 	fid=request.GET.get("fid",'')
@@ -75,6 +79,7 @@ def category(request,cid):
 			return _displaycategory(request,status,products)
 		return HttpResponse(status='400')
 
+@ensure_csrf_cookie()
 def _displaycategory(request,status,products=None,total=0):
 	if status!=1:
 		filterdict={}
@@ -91,7 +96,7 @@ def _displaycategory(request,status,products=None,total=0):
 	return render(request,'store/category.html',\
 		{'status':status,'filters':filterdict,'products':product,'total':total})
 
-
+@ensure_csrf_cookie()
 def detail(request,pid):
 	product=get_object_or_404(Products,id=pid)
 	productgroup=product.productgroup

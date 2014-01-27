@@ -1,7 +1,8 @@
 from django.db import models
-from store.exception_define import NotEnoughProduct,ProductOffline
+from cccygf.exception_define import NotEnoughProduct,ProductOffline,ProductUnbought
 from django.contrib.auth.models import User
-from store.models import ProductsGroup,Products
+from store.models import Products
+from django.core.exceptions import ObjectDoesNotExist
 # Create your models here.
 class Cart(models.Model):
 	user=models.OneToOneField(User,blank=True,null=True)
@@ -19,6 +20,13 @@ class Cart(models.Model):
 
 		cart_item.save()
 		return cart_item
+	def delete_items(self,pid):
+		try:
+			product=Products.objects.get(id=pid)
+			cart_item=CartItem.objects.get(cart=self,product=product)
+		except ObjectDoesNotExist:
+			raise ProductUnbought('未购买此商品')
+		cart_item.delete()
 	def get_items(self):
 		return CartItem.objects.select_related()\
 		.filter(cart=self,product__active=True)
@@ -31,16 +39,16 @@ class CartItem(models.Model):
 		
 	cart=models.ForeignKey(Cart)
 	product=models.ForeignKey(Products)
-	amount=models.PostiveSmallIntegerField(blank=True,null=True)
+	amount=models.PositiveSmallIntegerField(blank=True,null=True)
 	creation_date=models.DateTimeField(auto_now_add=True)
 	modification_date=models.DateTimeField(auto_now=True,auto_now_add=True)
 	def get_price(self,request):
-		if self.product.ProductsGroup.issale:
-			return self.product.ProductsGroup.saleprice
+		if self.product.productgroup.issale:
+			return self.product.productgroup.saleprice
 		if request.user.is_authenticated():
 			if request.user.userinfo.vip:
-				return self.product.ProductsGroup.vipprice
-		return self.product.ProductsGroup.price
+				return self.product.productgroup.vipprice
+		return self.product.productgroup.price
 	def get_price_gross(self,request):
 		price=self.get_price(request)
 		return price*self.amount
