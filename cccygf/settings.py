@@ -33,7 +33,7 @@ else:
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 WSGI_APPLICATION = 'wsgi.application'
 
