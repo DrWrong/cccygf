@@ -1,11 +1,14 @@
 import json
 from validate.untils import send_verify_message,mobile_legal
-from validate.models import MobileVerifyCode
+from validate.models import MoblieVerifyCode
 from user.models import UserInfo
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import HttpResponse
 from user.untils import hash_sign
+from validate.validate_code import create_validate_code
+from captcha.models import CaptchaStore
+from captcha.helpers import captcha_image_url
 # Create your views here.
 def smssend(request):
 	if request.method=='POST':
@@ -24,7 +27,7 @@ def smssend(request):
 					UserInfo.object.get(moblie=mobile)
 				except ObjectDoesNotExist:
 					data=send_verify_message(mobile)
-					mobilecode=MobileVerifyCode.objects.get_or_create(moblie=mobile)
+					mobilecode=MoblieVerifyCode.objects.get_or_create(moblie=mobile)
 					mobilecode.identifier=data['identifier']
 					mobilecode.create_at=datetime.fromtimestamp(data['create_at'])
 					mobilecode.save()
@@ -45,7 +48,7 @@ def callback(request,sign):
 			data=dict(res_code='1')
 		else:
 			try:
-				mobilecode=MobileVerifyCode.objects.get(identifier=identifier)
+				mobilecode=MoblieVerifyCode.objects.get(identifier=identifier)
 			except ObjectDoesNotExist:
 				data=dict(res_code='1')
 			else:
@@ -56,3 +59,10 @@ def callback(request,sign):
 					data=dict(res_code='1')
 		return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
 	return HttpResponse(status=400)
+
+def create_validatecode(request):
+	data=dict()
+	data['cptch_key']=CaptchaStore.generate_key()
+	data['cptch_image']=CaptchaStore.captcha_image_url(data['cptch_key'])
+	return HttpResponse(json.dumps(data),content_type='application/json')
+

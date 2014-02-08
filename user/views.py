@@ -5,7 +5,7 @@ from validate.models import MoblieVerifyCode,ValidateCode
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password
-from user.untils import finalusername,hash_sign,sendmail,email_legal
+from user.untils import finalusername,hash_sign,sendmail,email_legal,verifycode_correct,mobilecode_correct
 from django.contrib.auth.models import User
 from user.models import UserInfo
 from base64 import urlsafe_b64decode
@@ -34,22 +34,10 @@ def register_mobile(request):
 			data['status']=13
 			data['error']='必须同意用户协议才能注册'
 			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
-		try:
-			entry=MoblieVerifyCode.objects.get(mobile=mobile)
-		except ObjectDoesNotExist:
-			data['status']=8
-			data['error']='手机号码未经过验证'
-			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
-		if not entry.code_effective():
-			data['status']=17
-			data['error']='验证码已过期'
-			return HttpResponse(json.dumps(data,ensure_ascii=False,content_type='application/json'))
-		if entry.verifycode!=verifycode:
+		if not mobilecode_correct(mobile,verifycode):
 			data['status']=9
 			data['error']='验证码不正确'
-			entry.delete()
 			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
-		entry.delete()
 		if password!=confirmpass:
 			data['status']=10
 			data['error']='密码前后不一致'
@@ -75,6 +63,7 @@ def register_email(request):
 			confirmpass=req['confirmpass']
 			verifycode=req['verifycode']
 			useragreement=req['useragreement']
+			cptch_key=req['keystring']
 		except:
 			data['status']=14
 			data['error']='缺少必要的项'
@@ -84,18 +73,10 @@ def register_email(request):
 			data['status']=13
 			data['error']='必须同意用户协议才能注册'
 			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
-		try:
-			entry=ValidateCode.objects.get(session=request.session.session_key)
-		except ObjectDoesNotExist:
-			data['status']=11
-			data['error']='内部错误'
-			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
-		if entry.validatestr!=verifycode:
+		if not verifycode_correct(cptch_key,verifycode):
 			data['status']=9
 			data['error']='验证码不正确'
-			entry.delete()
 			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
-		entry.delete()
 		if password!=confirmpass:
 			data['status']=10
 			data['error']='密码前后不一致'

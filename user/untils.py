@@ -8,7 +8,8 @@ from string import Template
 import hmac
 from cccygf.settings import HOST
 import re
-
+from captcha.models import CaptchaStore, get_safe_now
+from validate.models import MoblieVerifyCode,get_latest
 def randomstr(seed):
 	time=timezone.now().timestamp()
 	origstr=str(time)+seed
@@ -55,3 +56,19 @@ def email_legal(email):
 	else:
 		return False
 
+def verifycode_correct(key,response):
+	response=response.lower()
+	CaptchaStore.remove_expired()
+	try:
+		CaptchaStore.objects.get(response=response,hashkey=key,expiration__gte=get_safe_now()).delete()
+	except CaptchaStore.DoesNotExist:
+		return False
+	return True	
+
+def mobilecode_correct(mobile,response):
+	MoblieVerifyCode.remove_expired()
+	try:
+		MoblieVerifyCode.objects.get(mobile=mobile,verifycode=response,create_at__gte=get_latest()).delete()
+	except ObjectDoesNotExist:
+		return False
+	return True

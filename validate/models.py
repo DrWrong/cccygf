@@ -1,11 +1,8 @@
 from django.db import models
 from datetime import datetime,timedelta
 # Create your models here.
-class ValidateCode(models.Model):
-	session=models.CharField(blank=True,max_length=100,unique=True)
-	validatestr=models.CharField(max_length=4)
-	validateimg=models.ImageField(upload_to='validateimg')
-
+def get_latest():
+	return datetime.now()-timedelta(minutes=2)
 
 class MoblieVerifyCode(models.Model):
 	mobile=models.CharField(max_length=11,unique=True)
@@ -17,3 +14,6 @@ class MoblieVerifyCode(models.Model):
 			return True
 		self.delete()
 		return False
+	def remove_expired(cls):
+		cls.objects.filter(create_at__lte=get_latest()).delete()
+	remove_expired=classmethod(remove_expired)

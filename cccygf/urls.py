@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^store/',include('store.urls',namespace="store")),
     url(r'^cart/',include('cart.urls',namespace='cart')),
     url(r'^user/',include('user.urls',namespace='user')),
-    url(r'^verify/',include('validate.urls',namespace='validate'))
+    url(r'^verify/',include('validate.urls',namespace='validate')),
+    url(r'^captcha/',include('captcha.urls')),
 )

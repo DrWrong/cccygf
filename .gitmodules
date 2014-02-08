@@ -4,3 +4,6 @@
 [submodule "validate_code"]
 	path = validate_code
 	url = https://github.com/wuyangyu/validate_code.git
+[submodule "django-simple-captcha"]
+	path = django-simple-captcha
+	url = https://github.com/mbi/django-simple-captcha.git

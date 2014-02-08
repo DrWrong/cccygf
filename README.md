@@ -283,13 +283,12 @@ $.ajaxSetup({
 ```'{'status':statunumber,#错误码
      ’error':error str if have,#出错信息
     }'
-    8#手机号码未经过验证
+  
     9#验证码不正确
     10#密码前后不一致
     0#注册成功  
     14#Post数据不完全
     13# 未同意用户协议
-    17#验证码已过期
 ```
 - 可通的错误处理：当以GET请求时，返回400 bad request
 - TODO: 密码加密传输
@@ -307,10 +306,11 @@ $.ajaxSetup({
       'verifycode':verifycodestring,
       'password':passwordstring
       'confirmpass':string
+      'cptch_key':keystring
      }'
 ```
 - response: 同上
-``` 11#内部错误
+``` 
     12#邮箱已注册 
     1４#POST数据不完全
     13#未同意用户协议
@@ -328,10 +328,39 @@ $.ajaxSetup({
 ## 12 用户协议
 - 功能:展示用户协议
 - url: /user/aggrement/
-- view: views.useraggrement
-- urlname: aggrement
+- view: user.views.useraggrement
+- urlname: 'user:aggrement'
 - template: 'user/useragreement.html'
 - request method: GET
 > -request args: None
 - respond: none
-## 13
+## 13　验证短信发送
+- 功能：调用open.189.cn　API　发送验证短信
+- url: /verify/sendmessage/ 
+- urlname: 'validate:smssend'
+- view: validate.views.smssend
+- template: None
+- request method:POST
+> -request args:ajax {'mobile':mobilenumber}
+- response:
+    {'status': status number
+     'error': error string
+    }
+    14＃缺少必要的项
+    15#手机号码不合法
+    16#手机已注册
+##14 短信回调
+-功能：提供回调功能,此url仅供open189使用
+-url: /verify/callback/sign/
+-urlname: 'validate:smssend'
+##15　获取验证码
+-功能:　调用该URL获取验证码
+-url: /verify/getimage/
+-urlname: validate:validateimage
+-view: validate.views.create_validatecode
+-request method: GET
+-response:JSON
+    {'cptch_key':keystring#对应的key
+     'cptch_image':img_url
+    }
+    
