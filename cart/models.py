@@ -10,16 +10,20 @@ class Cart(models.Model):
 	creation_date=models.DateTimeField(auto_now_add=True)
 	modification_date=models.DateTimeField(auto_now=True,auto_now_add=True)
 
-	def add_or_modify(self,product,amount=1):
+	def add_or_modify(self,product,amount=1,add=True):
 		try:
 			cart_item=CartItem.objects.get(cart=self,product=product)
 		except CartItem.DoesNotExist:
 			cart_item=CartItem.objects.create(cart=self,product=product,amount=amount)
 		else:
-			cart_item.amount+=amount
+			if add:
+				cart_item.amount+=amount
+			else:
+				cart_item.amount=amount
 
 		cart_item.save()
 		return cart_item
+
 	def delete_items(self,pid):
 		try:
 			product=Products.objects.get(id=pid)

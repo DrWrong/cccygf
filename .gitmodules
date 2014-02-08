@@ -1,3 +1,6 @@
 [submodule "sinaweibopy"]
 	path = sinaweibopy
 	url = https://github.com/michaelliao/sinaweibopy.git
+[submodule "validate_code"]
+	path = validate_code
+	url = https://github.com/wuyangyu/validate_code.git

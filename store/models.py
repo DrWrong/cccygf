@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from store.untils import randomstr
 from django.core.validators import MaxValueValidator
 from django.core.exceptions import ValidationError
 # Create your models here
@@ -67,6 +66,7 @@ class ProductsGroup(models.Model):
 	salenumber=models.PositiveSmallIntegerField(default=0)
 	commentnumber=models.PositiveSmallIntegerField(default=0)
 	hitnumber=models.PositiveSmallIntegerField(default=0)
+	recommand=models.BooleanField(default=False)
 	def save(self,*args,**kwargs):
 		if self.issale==True:
 			if self.saleprice==None:
@@ -122,49 +122,6 @@ class Comment(models.Model):
 #			productgroup.commentnumber+=1
 #			productgroup.save()
 
-#用户信息表
-class UserInfo(models.Model):
-	"""docstring for Merchant"""
-	user=models.OneToOneField(User)
-	mobile=models.CharField(max_length=11)
-	score=models.PositiveSmallIntegerField()
-	vip=models.BooleanField(default=False)
-
-#商户信息
-class Merchant(UserInfo):
-	"""docstring for Merchant"""
-	name=models.CharField("公司名称",max_length=20)
-	identify_number=models.CharField(max_length=18)
-	identify_card=models.ImageField(upload_to=(lambda instance,filename:\
-		'merchantimage/%s/id_card/%s/%s'%(instance.name,randomstr())))
-
-
-
-#用户地址
-class Address(models.Model):
-	user=models.ForeignKey(User)
-	recipient=models.CharField(max_length=50)
-	#用户地区　由前端生成有效字符串
-	district=models.CharField(max_length=100)
-	#用户详细地址
-	address=models.CharField(max_length=100)
-	mobile=models.CharField(max_length=11)
-	telphone=models.CharField(max_length=12,blank=True)
-	mail=models.EmailField()
-	current_use=models.BooleanField(default=True)
-
-#发票表
-class invoice(models.Model):
-	"""docstring for invoice"""
-	user=models.ForeignKey(User)
-	tittle=models.CharField(max_length=100)
-	content_choice=(
-		('明细','明细'),
-		('办公用品','办公用品'),
-		('电脑配件','电脑配件'),
-		('耗材','耗材'))
-	content=models.CharField(max_length=10)
-	content_use=models.BooleanField(default=True)
 
 
 

@@ -51,7 +51,7 @@
 ## 2.首页：
 ---
 - 功能: 导航、产品展示，搜索。其中以产品展示为主，产品展示最新产品，热卖产品，高评价产品,特卖商品
-- url: /home
+- url: store/home
 - urlname: store:home
 - view: home
 - template: home.html
@@ -59,21 +59,21 @@
 > -request args: none
 - response: 
 ``` python
-    {'newProduct':productqueryset,#最新上线的前９件商品
-     'hotProduct':productqueryset,#热卖商品前10
-     'mostCommentProduct':productqueryset, #热评商品前7
-     'saleProduct':productqueryset,#特卖商品
+    {'newProduct':productgroupqueryset,#最新上线的前９件商品
+     'hotProduct':productgroupqueryset,#热卖商品前10
+     'mostCommentProduct':productgroupqueryset, #热评商品前7
+     'saleProduct':productgroupqueryset,#特卖商品
      'showgallery':galleryqueryset,#展示框
     }
 ```
-> - product method:
+> - productgroup method:
 ```python
-    product.indeximage # 首页图片url
-    product.name #商品名称
-    product.price #价格
-    product.saleprice #特卖价格
-    product.vipprice #会员价格
-    product.products_set #同类不同规格的所有产品
+    productgroup.indeximage # 首页图片url
+    productgroup.name #商品名称
+    productgroup.price #价格
+    productgroup.saleprice #特卖价格
+    productgroup.vipprice #会员价格
+    productgroup.products_set #同类不同规格的所有产品
     products_set[0].id #商品pid 用于生成链接
 ```
 > - showgallery method:
@@ -93,7 +93,7 @@
 ## 3.搜索页
 ---
 - 功能： 实现产品搜索，如果搜索字串为空，返回全部商品，如果不为空返回选定商品，如果未找到，显示热卖商品
-- url: /search?q=keyword
+- url: store/search?q=keyword
 - urlname: store:search
 - view: views.search
 - template: category.html
@@ -124,7 +124,7 @@
 ## 4.商品分类展示页：
 ---
 - 功能：展现商品分类，可以按照子分类过滤，可以按照某一个排序规律进行排序
-- url: /category/cid?fid=''&sortid=''&sort=''
+- url: /store/category/cid?fid=''&sortid=''&sort=''
 - urlname: store:category
 - view: views.category
 - template: category.html
@@ -145,7 +145,7 @@
 ## 5.商品详情页
 ---
 - 功能：　展现商品的详情，包括相关的图,产品海报，常见问题，用户评论等等信息。
-- url: /item/pid
+- url: /store/item/pid
 - urlname: store:detail
 - view: views.detail
 - template: detail.html
@@ -181,7 +181,8 @@
 ```
 - link: 购物车 收藏页
 - 可能的错误处理：404 not found
-```
+- sketch: ![分类页效果图](sketch/detail.jpg)
+
 ---
 
 ##6 购物车inline
@@ -228,21 +229,104 @@ $.ajaxSetup({
 });
 ```            
 - request args:
-   dataType: 'json' '{'operator': opnum  'pid':productid}
-   operator 表示操作数 0删除 1添加
-- response: json '{'status':statunumber}'
-    statubumber: 0表示删除成功，5没有购买此商品
-   
-     
-
-
-
-
-     
-    
-        
- 
-
-
-
-
+   dataType: 'json' '{'operator': opnum,'pid':productid,'amount':product amount}
+   operator 表示操作数 0删除 1添加 2修改产品数量
+- response: json '{'status':statunumber,'error':errorstring}'
+    statubumber: 0表示删除成功，5没有购买此商品 6 商品缺货 7 错误的操作码
+    errorstring: 错误信息
+---
+##7 购物车
+---
+- 功能：商品汇总页，显示当前的所有商品,并进行相关商品推荐
+- url: /store/cart/
+- urlname: cart:cart
+- view: store.views.cart
+- template: none
+- request method: GET 
+> - request args: none
+- response:
+```
+    {'smallproduct':productgroupqueryset,#小商品
+    'recommand':products，#特别推荐商品
+    }
+```
+> -method: 同2首页
+- 备注： 购物车内的商品通过ajax 方式访问6-inlinecart得到
+- link: 订单提交页，返回继续购物
+---
+#第二部分：用户注册模块
+##8 注册页面
+- 功能： 注册页面，提供常规的手机 邮箱注册方法,用户填写的表单通过ajax的方式异步传输到对应的服务端，进行注册
+- url: /user/register/ 
+- urlname: user:register
+- view user.views.user
+- template: 'user/register.html'
+- request method: GET
+- response: None
+##9 手机注册
+- 功能：处理手机注册所需的表单
+- url: /user/register/mobile
+- urlname: user:mobile
+- view user.views.register_mobile
+- template: None
+- request method: POST
+> - request args:JSON
+```
+    '{'mobile':mobilestring,#mobile str
+      'verifycode':verifycodestring,#验证码
+      'password':passwordstring,#密码字符串
+      ’confirmpass‘:string,#确认密码
+      }'
+```
+> -备注：ajax提交方法同上
+- resonse:JSON
+```'{'status':statunumber,#错误码
+     ’error':error str if have,#出错信息
+    }'
+    8#手机号码未经过验证
+    9#验证码不正确
+    10#密码前后不一致
+    0#注册成功  
+```
+- 可通的错误处理：当以GET请求时，返回400 bad request
+- TODO: 密码加密传输
+- link: 请求发送手机验证码
+##10  邮箱注册
+- 功能：处理邮箱注册的表单
+- url: /user/register/email
+- urlname: user:email
+- view: user.views.register_email
+- template:None
+- request method: POST
+> - request args:JSON
+```
+   '{'email':emailstring,#
+      'verifycode':verifycodestring,
+      'password':passwordstring
+      'confirmpass':string
+     }'
+```
+- response: 同上
+``` 11#内部错误
+    12#邮箱已注册 
+```
+##11 邮箱激活
+- 功能：通过访问该url用户可以激活自己的帐号
+- url: /user/active/?P<sign>/?P<usernamehash>/
+- urlname: user:active
+- view: user.views.active_email
+- template: 'user/active.html'
+- request method: GET
+> -request args: sign 签名 usernamehash  base64编码的用户账户
+- response:
+        {'message':messagestr}
+## 12 用户协议
+- 功能:展示用户协议
+- url: /user/aggrement/
+- view: views.useraggrement
+- urlname: aggrement
+- template: 'user/useragreement.html'
+- request method: GET
+> -request args: None
+- respond: none
+## 13

@@ -1,47 +1,69 @@
-from django.shortcuts import render
 from cart.untils import get_or_create_cart
-from django.core import serializers
-from django.HttpResponse
+from django.http import HttpResponse
 import json
-from cccygf.exception_define import ProductUnbought
-from django.core.exceptions import  NotEnoughProduct,ProductOffline,ProductUnbought
-
-from store.modles import Products
+from cccygf.exception_define import NotEnoughProduct,ProductOffline,ProductUnbought
+from django.core.exceptions import  ObjectDoesNotExist
+from store.models import Products
 
 # Create your views here.
 
 def inlinecart(request):
 	cart=get_or_create_cart(request)
-	if request.method="POST":
+	if request.method=="POST":
 		req=json.loads(request.body)
-		pid=req['pid']
-		status=0
-		error=''
-		if req['operator']==0:
-			try:
-				cart.delete_item(pid)
-			except ProductUnbought:
-				status=5
-				error='所要删除商品尚未购买'
-		elif req['operator']==1:
-			try:
-				product=Products.object.get(id=pid)
-			except ObjectDoesNotExist:
-				status=1
-				error='没有所需要商品'
-			else:
+		try:
+			pid=req['pid']
+			operator=req['operator']
+		except KeyError:
+			status=14
+			error='缺少必要的项'
+		else:	
+			status=0
+			error=''
+			if operator==0:
 				try:
-					cart.add_or_modify(product)
-				except ProductOffline:
-					status=3
-					error='商品已下线'
-				except NotEnoughProduct:
-					status=6
-					error='商品缺货'
+					cart.delete_item(pid)
+				except ProductUnbought:
+					status=5
+					error='所要删除商品尚未购买'
+			elif operator==1:
+				try:
+					product=Products.object.get(id=pid)
+				except ObjectDoesNotExist:
+					status=1
+					error='没有所需要商品'
+				else:
+					try:
+						cart.add_or_modify(product)
+					except ProductOffline:
+						status=3
+						error='商品已下线'
+					except NotEnoughProduct:
+						status=6
+						error='商品缺货'
+			elif operator==2:
+				try:
+					amount=req['amount']
+				except KeyError:
+					status=14
+					error='缺少必要的项'
+				else:
+					try:
+						cart.add_or_modify(product,amount=amount,add=False)
+					except NotEnoughProduct:
+						status=6
+						error='商品缺货'
+					except ProductOffline:  
+						status=3
+						error='商品已下线'
+
+			else:
+				status=7
+				error='错误的操作码'
 	
 	cart_items=cart.cartitem_set.all()
 	data={}
-	if len(cart_item)==0:
+	if len(cart_items)==0:
 		status=4
 		error='购物车里没有商品'
 	else:
