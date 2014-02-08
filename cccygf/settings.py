@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import imp
+
 ON_OPENSHIFT = False
 if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
@@ -20,8 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g6xnj78l^ob^%z+#0&5#g$)-85jda3^p67-tugfp((#_6^=f8i'
-
+default_keys={'SECRET_KEY':'g6xnj78l^ob^%z+#0&5#g$)-85jda3^p67-tugfp((#_6^=f8i'}
+use_keys=default_keys
+if ON_OPENSHIFT:
+    imp.find_module('openshiftlibs')
+    import openshiftlibs
+    use_keys = openshiftlibs.openshift_secure(default_keys)
+SECURITY=use_keys['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 if ON_OPENSHIFT:
     #developer mode
