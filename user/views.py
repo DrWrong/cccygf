@@ -9,6 +9,9 @@ from user.untils import finalusername,hash_sign,sendmail,email_legal,verifycode_
 from django.contrib.auth.models import User
 from user.models import UserInfo
 from base64 import urlsafe_b64decode
+from weibo import APIClient
+from django.core.urlresolvers import reverse
+from cccygf.settings import HOST
 
 # Create your views here.
 @ensure_csrf_cookie
@@ -117,3 +120,22 @@ def active_email(request,sign,usernamehash):
 
 def useragreement(request):
 	return render(request,'user/useragreement.html',{})
+
+app_key=''
+app_secret=''
+
+def login_use_weibo(request):
+
+	callback_url='http://'+HOST+reverse('user:callback')
+	client=APIClient(app_key=app_key,app_secret=app_secret,callback_url=callback_url)
+	url=client.get_authorize_url()
+
+def weibo_callback(request):
+	code=request.get('code','')
+	if code!='':
+		client=APIClient(app_key=app_key,app_secret=app_secret,redirect_url=callback_url)
+		r=client.request_access_token(code)
+		access_token=r.access_token
+		expires_in=r.expires_in
+		client.set_access_token(access_token,expires_in)
+		client.account.get_uid.get()

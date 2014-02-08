@@ -11,7 +11,7 @@ class UserInfo(models.Model):
 	mobile=models.CharField(max_length=11,blank=True)
 	score=models.PositiveSmallIntegerField()
 	vip=models.BooleanField(default=False)
-	sina_token=models.CharField(max_length=20,blank=True,unique=True)
+	sina_uid=models.CharField(max_length=20,blank=True,unique=True)
 	renren_token=models.CharField(max_length=20,blank=True,unique=True)
 	qq_token=models.CharField(max_length=20,blank=True,unique=True)
 
