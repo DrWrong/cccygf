@@ -9,4 +9,4 @@ class ValidateCode(models.Model):
 
 class MoblieVerifyCode(models.Model):
 	mobile=models.CharField(max_length=11,unique=True)
-	verifycode=models.CharField(max_length=8)
+	verifycode=models.CharField(max_length=6)

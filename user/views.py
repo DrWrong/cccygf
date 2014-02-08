@@ -17,13 +17,19 @@ def register(request):
 
 def register_mobile(request):
 	if request.method=='POST':
-		req=json.load(request.body)
-		mobile=req['mobile']
-		verifycode=req['verifycode']
-		password=req['password']
-		confirmpass=req['confirmpass']
-		useragreement=req['useragreement']
+		req=json.loads(request.body)
 		data={}
+		try:
+			mobile=req['mobile']
+			verifycode=req['verifycode']
+			password=req['password']
+			confirmpass=req['confirmpass']
+			useragreement=req['useragreement']
+		except KeyError:
+			data['status']=14
+			data['error']='缺少必要的项'
+			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json') 
+		
 		if not useragreement:
 			data['status']=13
 			data['error']='必须同意用户协议才能注册'
@@ -57,13 +63,19 @@ def register_mobile(request):
 
 def register_email(request):
 	if request.method=='POST':
-		req=json.load(request.body)
-		email=req['email']
-		password=req['passwrod']
-		confirmpass=req['confirmpass']
-		verifycode=req['verifycode']
-		useragreement=req['useragreement']
+		req=json.loads(request.body)
 		data={}
+		try:
+			email=req['email']
+			password=req['passwrod']
+			confirmpass=req['confirmpass']
+			verifycode=req['verifycode']
+			useragreement=req['useragreement']
+		except:
+			data['status']=14
+			data['error']='缺少必要的项'
+			return HttpResponse(json.dumps(data,ensure_ascii=False),contrib='application/json')
+		
 		if not useragreement:
 			data['status']=13
 			data['error']='必须同意用户协议才能注册'
