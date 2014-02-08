@@ -7,3 +7,9 @@
 [submodule "django-simple-captcha"]
 	path = django-simple-captcha
 	url = https://github.com/mbi/django-simple-captcha.git
+[submodule "captcha"]
+	path = django-simple-captcha
+	url = https://github.com/DrWrong/django-simple-captcha.git
+[submodule "second"]
+	path = sinaweibopy
+	url = https://github.com/DrWrong/sinaweibopy.git
