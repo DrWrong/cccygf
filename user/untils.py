@@ -7,6 +7,7 @@ from base64 import urlsafe_b64encode
 from string import Template
 import hmac
 from cccygf.settings import HOST
+import re
 
 def randomstr(seed):
 	time=timezone.now().timestamp()
@@ -47,3 +48,10 @@ def sendmail(email,hash_url,username):
 
 	CC文化团队''')
 	send_mail('【cc创意工坊】请激活你的账户',message.safe_substitute({'url':url}),'creativeculture1@163.com',[email])
+
+def email_legal(email):
+	if re.match(r'^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-z0-9_-])+$',email):
+		return True
+	else:
+		return False
+

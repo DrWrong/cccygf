@@ -5,7 +5,7 @@ from validate.models import MoblieVerifyCode,ValidateCode
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password
-from user.untils import finalusername,hash_sign,sendmail
+from user.untils import finalusername,hash_sign,sendmail,email_legal
 from django.contrib.auth.models import User
 from user.models import UserInfo
 from base64 import urlsafe_b64decode
@@ -40,6 +40,10 @@ def register_mobile(request):
 			data['status']=8
 			data['error']='手机号码未经过验证'
 			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
+		if not entry.code_effective():
+			data['status']=17
+			data['error']='验证码已过期'
+			return HttpResponse(json.dumps(data,ensure_ascii=False,content_type='application/json'))
 		if entry.verifycode!=verifycode:
 			data['status']=9
 			data['error']='验证码不正确'
@@ -97,6 +101,10 @@ def register_email(request):
 			data['error']='密码前后不一致'
 			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
 		password=make_password(password)
+		if not email_legal(email):
+			data['status']=18
+			data['error']='邮箱不合法'
+			return HttpResponse(json.dumps(data,ensure_ascii=False),content_type='application/json')
 		user=User.objects.filter(email=email)
 		if len(user)!=0:
 			data['status']=12

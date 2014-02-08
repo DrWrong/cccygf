@@ -287,6 +287,9 @@ $.ajaxSetup({
     9#验证码不正确
     10#密码前后不一致
     0#注册成功  
+    14#Post数据不完全
+    13# 未同意用户协议
+    17#验证码已过期
 ```
 - 可通的错误处理：当以GET请求时，返回400 bad request
 - TODO: 密码加密传输
@@ -309,10 +312,12 @@ $.ajaxSetup({
 - response: 同上
 ``` 11#内部错误
     12#邮箱已注册 
+    1４#POST数据不完全
+    13#未同意用户协议
 ```
 ##11 邮箱激活
 - 功能：通过访问该url用户可以激活自己的帐号
-- url: /user/active/?P<sign>/?P<usernamehash>/
+- url: /user/active/?P sign/?P usernamehash/
 - urlname: user:active
 - view: user.views.active_email
 - template: 'user/active.html'

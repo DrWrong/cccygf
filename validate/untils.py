@@ -6,7 +6,8 @@ from hashlib import sha1
 from base64 import b64encode
 from django.core.urlresolvers import reverse
 from cccygf.settings import HOST
-
+import re
+from user.untils import hash_sign
 app_id='202463130000034602'
 app_secret='74045aa7fc22d81e934ac35e6f2d788a'
 
@@ -44,7 +45,9 @@ def get_auth_token():
 	return data['token']
 
 def send_verify_message(phone):
-	url=reverse('validate:callback')
+	sign=hash_sign(phone)
+	url=reverse('validate:callback',args=[sign])
+
 	url='http://'+HOST+url
 	data=['app_id='+app_id,
 		'access_token='+get_access_token(),
@@ -56,9 +59,14 @@ def send_verify_message(phone):
 	data.sort()
 	postdata='&'.join(data)
 	postdata+=('&sign='+create_sign(postdata))
-	print(postdata)
 	postdata=postdata.encode('utf-8')
 	urlhandler=urlopen('http://api.189.cn/v2/dm/randcode/send',data=postdata)
 	data=urlhandler.readall().decode('utf-8')
 	data=json.loads(data)
 	return data
+
+def mobile_legal(phone):
+	if re.match(r'^1[3|4|5|8][0-9]\d{8}$',phone):
+		return True
+	else:
+		return False
