@@ -76,9 +76,9 @@ TEMPLATE_CONTEXT_PROCESSORS=(
     "store.context_processors.category",
     "django.core.context_processors.csrf")
 
-ROOT_URLCONF = 'cccygf.urls'
+ROOT_URLCONF = 'urls'
 
-WSGI_APPLICATION = 'cccygf.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database
