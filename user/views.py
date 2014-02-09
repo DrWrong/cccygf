@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 import json
-from validate.models import MoblieVerifyCode,ValidateCode
+from validate.models import MoblieVerifyCode
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password

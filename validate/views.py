@@ -6,7 +6,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import HttpResponse
 from user.untils import hash_sign
-from validate.validate_code import create_validate_code
 from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
 # Create your views here.
@@ -63,6 +62,6 @@ def callback(request,sign):
 def create_validatecode(request):
 	data=dict()
 	data['cptch_key']=CaptchaStore.generate_key()
-	data['cptch_image']=CaptchaStore.captcha_image_url(data['cptch_key'])
+	data['cptch_image']=captcha_image_url(data['cptch_key'])
 	return HttpResponse(json.dumps(data),content_type='application/json')
 
