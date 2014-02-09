@@ -57,7 +57,6 @@ INSTALLED_APPS = (
     'store',
     'cart',
     'user',
-    'validate',
 )
 
 
