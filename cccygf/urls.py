@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^store/',include('store.urls',namespace="store")),
+    url(r'^/',include('store.urls',namespace="store")),
     url(r'^cart/',include('cart.urls',namespace='cart')),
     url(r'^user/',include('user.urls',namespace='user')),
     url(r'^verify/',include('validate.urls',namespace='validate')),

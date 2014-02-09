@@ -35,7 +35,7 @@
 - url: /
 - urlname: store:leading
 - view: leading
-- template: leading.html
+- template: store/leading.html
 - request method: GET
 > - request args: none
 - response: 
@@ -51,10 +51,10 @@
 ## 2.首页：
 ---
 - 功能: 导航、产品展示，搜索。其中以产品展示为主，产品展示最新产品，热卖产品，高评价产品,特卖商品
-- url: store/home
+- url: /home
 - urlname: store:home
 - view: home
-- template: home.html
+- template: store/home.html
 - request method: GET
 > -request args: none
 - response: 
@@ -96,7 +96,7 @@
 - url: store/search?q=keyword
 - urlname: store:search
 - view: views.search
-- template: category.html
+- template: store/category.html
 - request method: GET
 > - request args: q 搜索关键词
 - response:
@@ -127,7 +127,7 @@
 - url: /store/category/cid?fid=''&sortid=''&sort=''
 - urlname: store:category
 - view: views.category
-- template: category.html
+- template: store/category.html
 - request method: GET
 > - request args: cid: 分类id fid 筛选id 中间以'+'分开　sortid: 排序依据　0 默认 1 上架时间 2价格 3 关注度　sort:排序方式0 降序　1升序
 - response:
@@ -147,7 +147,7 @@
 - 功能：　展现商品的详情，包括相关的图,产品海报，常见问题，用户评论等等信息。
 - url: /store/item/pid
 - urlname: store:detail
-- view: views.detail
+- view: store/views.detail
 - template: detail.html
 - request method: GET
 > - request args: pid product id
