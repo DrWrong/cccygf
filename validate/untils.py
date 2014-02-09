@@ -48,7 +48,7 @@ def send_verify_message(phone):
 	sign=hash_sign(phone)
 	url=reverse('validate:callback',args=[sign])
 
-	url='http://'+HOST+url
+	url='https://'+HOST+url
 	data=['app_id='+app_id,
 		'access_token='+get_access_token(),
 		'token='+get_auth_token(),

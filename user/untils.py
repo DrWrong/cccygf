@@ -41,7 +41,7 @@ def finalusername():
 def sendmail(email,hash_url,username):
 	
 	username=username.encode('utf8')
-	url='http://'+HOST+'/'+hash_url+'/'+urlsafe_b64encode(username).decode('uft8')
+	url='https://'+HOST+'/'+hash_url+'/'+urlsafe_b64encode(username).decode('uft8')
 	message=Template('''
 尊敬的用户:
 	欢迎加入CC创意工坊，请您使用以下链接激活你的CC账户 $url 。
