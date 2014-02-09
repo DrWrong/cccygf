@@ -81,7 +81,9 @@ TEMPLATE_CONTEXT_PROCESSORS=(
 ROOT_URLCONF = 'cccygf.urls'
 
 WSGI_APPLICATION = 'cccygf.wsgi.application'
-
+if ON_OPENSHIFT:
+    ROOT_URLCONF='urls'
+    WSGI_APPLICATION='wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

@@ -126,7 +126,7 @@ app_secret=''
 
 def login_use_weibo(request):
 
-	callback_url='https://'+HOST+reverse('user:callback')
+	callback_url='http://'+HOST+reverse('user:callback')
 	client=APIClient(app_key=app_key,app_secret=app_secret,callback_url=callback_url)
 	url=client.get_authorize_url()
 
