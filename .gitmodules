@@ -1,12 +1,3 @@
-[submodule "sinaweibopy"]
-	path = sinaweibopy
-	url = https://github.com/michaelliao/sinaweibopy.git
-[submodule "validate_code"]
-	path = validate_code
-	url = https://github.com/wuyangyu/validate_code.git
-[submodule "django-simple-captcha"]
-	path = django-simple-captcha
-	url = https://github.com/mbi/django-simple-captcha.git
 [submodule "captcha"]
 	path = django-simple-captcha
 	url = https://github.com/DrWrong/django-simple-captcha.git
