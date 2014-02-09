@@ -54,7 +54,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'captcha',
-    'django.contrib.staticfiles',
+    'store',
+    'cart',
+    'user',
+    'validate',
 )
 
 

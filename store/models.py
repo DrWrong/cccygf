@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from django.core.exceptions import ValidationError
+from user.models import Merchant
 # Create your models here
 #商品详情
 class Products(models.Model):
@@ -43,7 +44,7 @@ class ProductImage(models.Model):
 #同类商品组
 class ProductsGroup(models.Model):
 	name=models.CharField(max_length=50)
-	merchant=models.ForeignKey('Merchant')
+	merchant=models.ForeignKey(Merchant)
 	category=models.ForeignKey('Category')
 	price=models.FloatField()
 	saleprice=models.FloatField(blank=True,null=True)
