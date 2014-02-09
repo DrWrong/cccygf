@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'captcha'
 )
 
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -76,9 +77,9 @@ TEMPLATE_CONTEXT_PROCESSORS=(
     "store.context_processors.category",
     "django.core.context_processors.csrf")
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'cccygf.urls'
 
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'cccygf.wsgi.application'
 
 
 # Database
@@ -107,7 +108,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
 STATIC_URL = '/static/'
 
 EMAIL_HOST='smtp.163.com'
