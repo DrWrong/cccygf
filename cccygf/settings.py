@@ -14,7 +14,7 @@ import imp
 ON_OPENSHIFT=False
 if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
-
+PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -57,6 +57,7 @@ INSTALLED_APPS = (
     'store',
     'cart',
     'user',
+    'validate',
 )
 
 
@@ -83,9 +84,7 @@ TEMPLATE_CONTEXT_PROCESSORS=(
 ROOT_URLCONF = 'cccygf.urls'
 
 WSGI_APPLICATION = 'cccygf.wsgi.application'
-if ON_OPENSHIFT:
-    ROOT_URLCONF='urls'
-    WSGI_APPLICATION='wsgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -113,8 +112,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
+
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.environ.get('OPENSHIFT_DATA_DIR', '')
+MEDIA_URL = ''
+
+
 
 EMAIL_HOST='smtp.163.com'
 EMAIL_HOST_USER='creativeculture1'
