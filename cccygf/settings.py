@@ -30,7 +30,12 @@ if ON_OPENSHIFT:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+if ON_OPENSHIFT:
+    DEBUG = bool(os.environ.get('DEBUG', False))
+    if DEBUG:
+        print("WARNING: The DEBUG environment is set to True.")
+else:
+    DEBUG = True
 
 
 TEMPLATE_DEBUG = True
@@ -113,11 +118,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
+STATIC_ROOT = os.path.join(BASE_DIR,'..','static')
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.environ.get('OPENSHIFT_DATA_DIR', '')
-MEDIA_URL = ''
+MEDIA_URL = '/media'
 
 
 
